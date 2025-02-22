@@ -86,7 +86,10 @@ function movePlayer(dx, dy) {
         drawMaze();
     }
 }
-
+function showWinContent() {
+    console.log("Redirecting to success.html...");
+    window.location.href = "success.html";
+}
 function showWinContent() {
     window.location.href = "success.html";
 }
