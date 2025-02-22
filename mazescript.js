@@ -1,126 +1,86 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-const rows = 10;
-const cols = 13;
-const tileSize = 40;
-
-canvas.width = cols * tileSize;
-canvas.height = rows * tileSize;
-
-// Load images
-const wallImage = new Image();
-wallImage.src = "https://imgur.com/2wxq3od.png";
-
-const walkwayImage = new Image();
-walkwayImage.src = "https://i.imgur.com/3henhoR.png";
-
-const playerImage = new Image();
-playerImage.src = "https://i.pinimg.com/564x/a9/a4/ec/a9a4ec03fa9afc407028ca40c20ed774.jpg"; // Minecraft Alex image
-
-const whiteHeartImage = new Image();
-whiteHeartImage.src = "https://media.tenor.com/wnVuzMq9fYsAAAAi/love-heart.gif";
-
-const blackHeartImage = new Image();
-blackHeartImage.src = "https://media.tenor.com/qVJBrbsBk8EAAAAi/pixel-art-gmail.gif";
-
-const maze = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
-    [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1],
-    [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-];
-
-const player = { x: 6, y: 4 };
-const whiteHeartPos = { x: 11, y: 8 };
-const blackHeartPos = { x: 1, y: 1 };
-
-let gameStarted = false;
-
-function drawMaze() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-            if (maze[y][x] === 1) {
-                ctx.drawImage(wallImage, x * tileSize, y * tileSize, tileSize, tileSize);
-            } else {
-                ctx.drawImage(walkwayImage, x * tileSize, y * tileSize, tileSize, tileSize);
-            }
-        }
-    }
-    ctx.drawImage(whiteHeartImage, whiteHeartPos.x * tileSize, whiteHeartPos.y * tileSize, tileSize, tileSize);
-    ctx.drawImage(blackHeartImage, blackHeartPos.x * tileSize, blackHeartPos.y * tileSize, tileSize, tileSize);
-    ctx.drawImage(playerImage, player.x * tileSize, player.y * tileSize, tileSize, tileSize);
+/* Reset defaults */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
-function movePlayer(dx, dy) {
-    if (!gameStarted) return;
-
-    let newX = player.x + dx;
-    let newY = player.y + dy;
-
-    if (
-        newX >= 0 &&
-        newX < cols &&
-        newY >= 0 &&
-        newY < rows &&
-        maze[newY][newX] === 0
-    ) {
-        player.x = newX;
-        player.y = newY;
-
-        if (player.x === whiteHeartPos.x && player.y === whiteHeartPos.y) {
-            showWinContent();
-        }
-
-        if (player.x === blackHeartPos.x && player.y === blackHeartPos.y) {
-            showGameOver();
-        }
-
-        drawMaze();
-    }
+/* Body styling */
+body { 
+    text-align: center;
+    background: #ffdde1 url('https://i.imgur.com/nVVaZgV.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
 }
 
-function showWinContent() {
-    window.location.href = "success.html";
+/* Centering the maze */
+#canvas {
+    background: #fff;
+    display: block;
+    border-radius: 10px;
+    border: 5px solid #fba2b7;
+    box-shadow: 0 0 10px rgba(255, 111, 145, 0.3);
+
+    /* Centering */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
 }
 
-function showGameOver() {
-    document.getElementById("game-over-screen").style.display = "block";
-    gameStarted = false;
+/* Centering start screen */
+#start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 221, 225, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    
+    z-index: 2;
 }
 
-function startGame() {
-    document.getElementById("start-screen").style.display = "none";
-    document.getElementById("game-over-screen").style.display = "none";
-    gameStarted = true;
-    player.x = 6;
-    player.y = 4;
-    drawMaze();
+/* Centering game over screen */
+#game-over-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 221, 225, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    
+    z-index: 2;
+    display: none;
 }
 
-function restartGame() {
-    document.getElementById("game-over-screen").style.display = "none";
-    startGame();
+/* Buttons */
+#start-screen button,
+#game-over-screen button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #ff6f91;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
-window.addEventListener("keydown", function (event) {
-    switch (event.key) {
-        case "ArrowUp":    movePlayer(0, -1); break;
-        case "ArrowDown":  movePlayer(0,  1); break;
-        case "ArrowLeft":  movePlayer(-1, 0); break;
-        case "ArrowRight": movePlayer(1,  0); break;
-    }
-});
-
-wallImage.onload = drawMaze;
-walkwayImage.onload = drawMaze;
-playerImage.onload = drawMaze;
-whiteHeartImage.onload = drawMaze;
-blackHeartImage.onload = drawMaze;
+#start-screen button:hover,
+#game-over-screen button:hover {
+    background: #ff4d6d;
+}
