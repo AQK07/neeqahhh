@@ -88,7 +88,7 @@ function movePlayer(dx, dy) {
 }
 
 function showWinContent() {
-    window.location.href = "valentine-success.html";
+    window.location.href = "success.html";
 }
 
 function showGameOver() {
